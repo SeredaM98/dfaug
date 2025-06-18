@@ -413,19 +413,19 @@ class ContrastiveDiff(LightningModule):
 
         data = torch.cat([data_at, data_aat])
         # if self.current_epoch > self.hparams.joint_epoch + 1:
-        if self.current_epoch == self.cnt:
-            self.cnt = self.cnt + 1
-            print(self.em_state)
-            plt.clf()
-            for i in range(8):
-                plt.subplot(2,4,i+1)
-                plt.axis('off')
-                if i < 4:
-                    plt.imshow(data_at[i].cpu().detach().numpy().reshape(28, 28))
-                else:
-                    plt.imshow(data_aat[i-4].cpu().detach().numpy().reshape(28, 28))
-            plt.savefig(f'data_trainexpl_epoch_{self.current_epoch}.png')
-            plt.clf()
+        #if self.current_epoch == self.cnt:
+        #    self.cnt = self.cnt + 1
+        #   print(self.em_state)
+        #    plt.clf()
+        #    for i in range(8):
+        #        plt.subplot(2,4,i+1)
+        #        plt.axis('off')
+        #        if i < 4:
+        #            plt.imshow(data_at[i].cpu().detach().numpy().reshape(28, 28))
+        #        else:
+        #            plt.imshow(data_aat[i-4].cpu().detach().numpy().reshape(28, 28))
+        #    plt.savefig(f'data_trainexpl_epoch_{self.current_epoch}.png')
+        #    plt.clf()
 
         if self.em_state == "s1" or self.em_state == "e":
             
@@ -485,15 +485,24 @@ class ContrastiveDiff(LightningModule):
         self.em_state = self.EM_switch()
         self.n_token_feature = n_token_feature
         # if self.em_state == "e" or self.em_state == "m":
-        if self.update_aug_bank:
-            print("\naugmented")
-            self.vis.eval()
-            self.enc.eval()
-            #cond, _ = self(data_at, batch_idx)
-            with torch.no_grad():
-                #samples = self.augment_data_simple(cond[:batch_size])
-                samples = self.augment_mnist_batch(data_at[:batch_size])
-                self.data_aug[index] = samples.reshape(batch_size, -1).cpu()
+        #if self.update_aug_bank:
+        #    print("\naugmented")
+        #    self.vis.eval()
+        #    self.enc.eval()
+             #cond, _ = self(data_at, batch_idx)
+        #    with torch.no_grad():
+        #        #samples = self.augment_data_simple(cond[:batch_size])
+        #        samples = self.augment_mnist_batch(data_at[:batch_size])
+         #       self.data_aug[index] = samples.reshape(batch_size, -1).cpu()
+
+        if self.em_state == "e" or self.em_state == "m":
+            if self.current_epoch % 1000000000 == 0:
+                self.vis.eval()
+                self.enc.eval()
+                cond, _ = self(data_at, batch_idx)
+                with torch.no_grad():
+                    samples = self.augment_data_simple(cond[:batch_size])
+                    self.data_aug[index] = samples.reshape(batch_size, -1).cpu()
 
         data = data_at
         lat_high_dim, lat_vis = self(data, batch_idx)

@@ -18,7 +18,7 @@ model:
   joint_epoch: 200
   E_epochs: 300
   D_epochs: 40
-  n_timestep: 100
+  n_timestep: 500
   lr: 0.001
   weight_decay: 0.0001
   rand_rate: 0.9
