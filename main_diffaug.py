@@ -495,8 +495,7 @@ class ContrastiveDiff(LightningModule):
         #        samples = self.augment_mnist_batch(data_at[:batch_size])
          #       self.data_aug[index] = samples.reshape(batch_size, -1).cpu()
 
-        if self.em_state == "e" or self.em_state == "m":
-            if self.current_epoch % 1000000000 == 0:
+        if self.em_state == "e" or self.em_state == "m" or self.em_state == "s2":
                 self.vis.eval()
                 self.enc.eval()
                 cond, _ = self(data_at, batch_idx)
